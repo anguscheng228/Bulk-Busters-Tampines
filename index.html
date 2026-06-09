@@ -4,10 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>BULK BUSTERS @ Tampines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-html, body { width:100%; height:100%; background:#060809; overflow:hidden; touch-action:none; font-family:monospace; }
-#wrapper { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; }
+html, body { width:100%; height:100%; background:#060809; overflow:hidden; touch-action:none; font-family:'Press Start 2P',monospace; margin:0; padding:0; }
+/* Eliminate any browser-injected padding in fullscreen */
+:fullscreen { padding:0!important; margin:0!important; }
+:-webkit-full-screen { padding:0!important; margin:0!important; }
+:-moz-full-screen { padding:0!important; margin:0!important; }
+:fullscreen #wrapper, :-webkit-full-screen #wrapper, :-moz-full-screen #wrapper {
+  inset:0!important; top:0!important;
+}
+#wrapper { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#060809; }
 #gameCanvas { display:block; image-rendering:pixelated; image-rendering:crisp-edges; cursor:crosshair; }
 .overlay {
   position:absolute; inset:0; display:flex; flex-direction:column;
@@ -24,7 +34,7 @@ html, body { width:100%; height:100%; background:#060809; overflow:hidden; touch
 .tagline { color:#4a5a3a; letter-spacing:2px; text-align:center; font-size:9px; }
 .instr { color:#5a6a4a; line-height:2; text-align:center; font-size:9px; }
 .instr span { color:#a8a080; }
-.btn { background:none; border:1px solid currentColor; font-family:monospace; letter-spacing:3px;
+.btn { background:none; border:1px solid currentColor; font-family:'Press Start 2P',monospace; letter-spacing:1px;
   text-transform:uppercase; cursor:pointer; padding:9px 32px; font-size:10px;
   transition:background 0.15s, color 0.15s; margin-top:6px; }
 .btn:hover,.btn:active { filter:brightness(1.4); }
@@ -78,35 +88,35 @@ html, body { width:100%; height:100%; background:#060809; overflow:hidden; touch
     <div style="position:relative;z-index:5;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:5%;">
 
       <!-- Campaign tag -->
-      <div style="color:#d0f0a0;font-family:monospace;letter-spacing:4px;text-transform:uppercase;font-size:clamp(7px,1.2vw,10px);background:rgba(20,60,10,0.75);border:1px solid #5a9030;padding:3px 14px;margin-bottom:6px;">Tampines Community Campaign</div>
+      <div style="color:#d0f0a0;font-family:'Press Start 2P',monospace;letter-spacing:4px;text-transform:uppercase;font-size:clamp(7px,1.2vw,10px);background:rgba(20,60,10,0.75);border:1px solid #5a9030;padding:3px 14px;margin-bottom:6px;">Tampines Community Campaign</div>
 
       <!-- BLOCK PATROL -->
-      <div id="tTitle" style="font-family:monospace;font-weight:bold;text-transform:uppercase;font-size:clamp(26px,6vw,58px);letter-spacing:clamp(3px,0.8vw,8px);line-height:1;text-align:center;color:#f0edd0;text-shadow:4px 4px 0 #1a4008,-1px -1px 0 #1a4008,1px -1px 0 #1a4008,-1px 1px 0 #1a4008,0 0 24px rgba(122,176,80,0.7),0 0 48px rgba(122,176,80,0.35);">BLOCK PATROL</div>
+      <div id="tTitle" style="font-family:'Press Start 2P',monospace;font-weight:bold;text-transform:uppercase;font-size:clamp(26px,6vw,58px);letter-spacing:clamp(3px,0.8vw,8px);line-height:1;text-align:center;color:#f0edd0;text-shadow:4px 4px 0 #1a4008,-1px -1px 0 #1a4008,1px -1px 0 #1a4008,-1px 1px 0 #1a4008,0 0 24px rgba(122,176,80,0.7),0 0 48px rgba(122,176,80,0.35);">BLOCK PATROL</div>
 
       <!-- BULKY RESCUE -->
-      <div id="tSub" style="font-family:monospace;font-weight:bold;text-transform:uppercase;font-size:clamp(13px,2.8vw,26px);letter-spacing:clamp(2px,0.6vw,6px);color:#7ab050;text-shadow:3px 3px 0 #0a2004,0 0 16px rgba(122,176,80,0.9);margin-top:3px;">BULKY RESCUE</div>
+      <div id="tSub" style="font-family:'Press Start 2P',monospace;font-weight:bold;text-transform:uppercase;font-size:clamp(13px,2.8vw,26px);letter-spacing:clamp(2px,0.6vw,6px);color:#7ab050;text-shadow:3px 3px 0 #0a2004,0 0 16px rgba(122,176,80,0.9);margin-top:3px;">BULKY RESCUE</div>
 
       <!-- @ TAMPINES -->
-      <div style="font-family:monospace;color:#ffe878;font-size:clamp(8px,1.5vw,13px);letter-spacing:5px;text-shadow:1px 1px 0 #5a3800;margin-top:5px;">@ TAMPINES</div>
+      <div style="font-family:'Press Start 2P',monospace;color:#ffe878;font-size:clamp(8px,1.5vw,13px);letter-spacing:5px;text-shadow:1px 1px 0 #5a3800;margin-top:5px;">@ TAMPINES</div>
 
       <!-- Tagline -->
-      <div style="font-family:monospace;color:#c8f090;font-size:clamp(7px,1.1vw,10px);letter-spacing:2px;text-shadow:1px 1px 0 #1a3808;margin-top:10px;background:rgba(0,0,0,0.4);padding:4px 14px;border-left:2px solid #5a9030;border-right:2px solid #5a9030;">★ Who you gonna call when the corridor's full? ★</div>
+      <div style="font-family:'Press Start 2P',monospace;color:#c8f090;font-size:clamp(7px,1.1vw,10px);letter-spacing:2px;text-shadow:1px 1px 0 #1a3808;margin-top:10px;background:rgba(0,0,0,0.4);padding:4px 14px;border-left:2px solid #5a9030;border-right:2px solid #5a9030;">★ Who you gonna call when the corridor's full? ★</div>
 
       <div style="flex:1;min-height:8px;"></div>
 
             <!-- Start button -->
-      <button id="startBtn" style="font-family:monospace;font-weight:bold;text-transform:uppercase;letter-spacing:4px;cursor:pointer;font-size:clamp(10px,1.6vw,14px);padding:clamp(8px,1.2vh,13px) clamp(22px,3.5vw,40px);color:#0a1408;background:#7ab050;border:3px solid #c8f090;box-shadow:0 0 20px rgba(122,176,80,0.8),0 4px 0 #1a4008;margin-bottom:clamp(14px,4vh,32px);">▶ START PATROL</button>
+      <button id="startBtn" style="font-family:'Press Start 2P',monospace;font-weight:bold;text-transform:uppercase;letter-spacing:4px;cursor:pointer;font-size:clamp(10px,1.6vw,14px);padding:clamp(8px,1.2vh,13px) clamp(22px,3.5vw,40px);color:#0a1408;background:#7ab050;border:3px solid #c8f090;box-shadow:0 0 20px rgba(122,176,80,0.8),0 4px 0 #1a4008;margin-bottom:clamp(14px,4vh,32px);">▶ START PATROL</button>
 
     </div>
   </div>
 
   <div id="endScreen" class="overlay" style="background:rgba(6,12,4,0.93);gap:0;">
-    <div id="endTitle" style="font-family:monospace;letter-spacing:4px;text-align:center;font-size:clamp(20px,4vw,38px);color:#c8b89a;text-transform:uppercase;margin-bottom:10px;"></div>
+    <div id="endTitle" style="font-family:'Press Start 2P',monospace;letter-spacing:4px;text-align:center;font-size:clamp(20px,4vw,38px);color:#c8b89a;text-transform:uppercase;margin-bottom:10px;"></div>
     <div class="divider"></div>
-    <div id="endStats" style="color:#8aaa68;letter-spacing:1px;line-height:2.4;text-align:center;font-family:monospace;font-size:clamp(13px,2.4vw,20px);margin:8px 0;"></div>
-    <div id="endFact" style="margin:10px 0 6px;color:#5a7a40;max-width:min(420px,88vw);text-align:center;line-height:1.9;font-family:monospace;font-size:clamp(11px,1.8vw,15px);border-left:2px solid #3a5a20;padding-left:12px;"></div>
-    <div id="hiScore" style="margin:6px 0 16px;color:#7ab050;letter-spacing:2px;font-family:monospace;font-size:clamp(12px,2.2vw,18px);"></div>
-    <button id="restartBtn" style="font-family:monospace;font-weight:bold;text-transform:uppercase;letter-spacing:4px;cursor:pointer;font-size:clamp(11px,2vw,16px);padding:clamp(10px,1.5vh,16px) clamp(28px,4vw,48px);color:#0a1408;background:#7ab050;border:3px solid #c8f090;box-shadow:0 0 16px rgba(122,176,80,0.7),0 4px 0 #1a4008;">↩ BACK TO TITLE</button>
+    <div id="endStats" style="color:#8aaa68;letter-spacing:1px;line-height:2.4;text-align:center;font-family:'Press Start 2P',monospace;font-size:clamp(13px,2.4vw,20px);margin:8px 0;"></div>
+    <div id="endFact" style="margin:10px 0 6px;color:#5a7a40;max-width:min(420px,88vw);text-align:center;line-height:1.9;font-family:'Press Start 2P',monospace;font-size:clamp(11px,1.8vw,15px);border-left:2px solid #3a5a20;padding-left:12px;"></div>
+    <div id="hiScore" style="margin:6px 0 16px;color:#7ab050;letter-spacing:2px;font-family:'Press Start 2P',monospace;font-size:clamp(12px,2.2vw,18px);"></div>
+    <button id="restartBtn" style="font-family:'Press Start 2P',monospace;font-weight:bold;text-transform:uppercase;letter-spacing:4px;cursor:pointer;font-size:clamp(11px,2vw,16px);padding:clamp(10px,1.5vh,16px) clamp(28px,4vw,48px);color:#0a1408;background:#7ab050;border:3px solid #c8f090;box-shadow:0 0 16px rgba(122,176,80,0.7),0 4px 0 #1a4008;">↩ BACK TO TITLE</button>
   </div>
 
   <button id="fsBtn" title="Fullscreen">⛶</button>
@@ -122,15 +132,29 @@ const VW=240, VH=150;
 let SCALE=1;
 
 function computeScale(){
-  // After fullscreen, innerWidth/Height may lag — use screen size as upper bound
-  const w=isFS() ? screen.width  : window.innerWidth;
-  const h=isFS() ? screen.height : window.innerHeight;
+  // Use visualViewport when available (most accurate in fullscreen)
+  const vvp = window.visualViewport;
+  const w = vvp ? vvp.width  : (isFS() ? screen.width  : window.innerWidth);
+  const h = vvp ? vvp.height : (isFS() ? screen.height : window.innerHeight);
   return Math.max(1,Math.min(Math.floor(w/VW),Math.floor(h/VH),7));
 }
 function applyScale(){
   SCALE=computeScale();
   canvas.width=VW*SCALE; canvas.height=VH*SCALE;
   ctx.imageSmoothingEnabled=false;
+  // Force wrapper to truly fill viewport after fullscreen
+  const wrapper=document.getElementById('wrapper');
+  if(isFS()){
+    wrapper.style.top='0';
+    wrapper.style.left='0';
+    wrapper.style.width='100vw';
+    wrapper.style.height='100vh';
+  } else {
+    wrapper.style.top='';
+    wrapper.style.left='';
+    wrapper.style.width='';
+    wrapper.style.height='';
+  }
 }
 applyScale();
 window.addEventListener('resize',applyScale);
@@ -281,7 +305,8 @@ const FACTS=[
   "Illegal dumping fines can reach up to $1,000.",
   "Bulky items in common areas attract pests and vermin.",
 ];
-const CP={x:208,y:8,w:22,h:15};
+// HUD is now at bottom (y: VH-14 to VH), CP sits in top-right clear of ceiling
+const CP={x:208,y:25,w:22,h:15};
 
 // ═══════════════════════════════════
 //  STATE
@@ -357,7 +382,7 @@ function spawnNPC(){
   const look=LOOKS[Math.random()*LOOKS.length|0];
   const itype={...ITEMS[Math.random()*ITEMS.length|0]};
   const left=Math.random()<0.5;
-  const tx=35+Math.random()*150, ty=30+Math.random()*100;
+  const tx=35+Math.random()*150, ty=30+Math.random()*90;
   npcs.push({
     x:left?2:VW-2, y:ty, tx, ty,
     speed:22+Math.random()*10+wave*2,
@@ -431,7 +456,7 @@ function update(dt){
     const len=Math.hypot(dx,dy)||1;
     const sp=player.carry?player.speed*0.55:player.speed;
     player.x=Math.max(8,Math.min(VW-8,player.x+dx/len*sp*dt));
-    player.y=Math.max(24,Math.min(VH-8,player.y+dy/len*sp*dt));
+    player.y=Math.max(24,Math.min(VH-18,player.y+dy/len*sp*dt));
     player.anim+=dt;
     if(dx>0)player.face=1;else if(dx<0)player.face=-1;
   }
@@ -498,8 +523,8 @@ function dp(x,y,c,w=1,h=1){
 // ═══════════════════════════════════
 function drawBG(){
   dr(0,0,VW,VH,P.bg);
-  // Floor
-  for(let ty=22;ty<VH-6;ty+=8)
+  // Floor tiles (between ceiling and skirting)
+  for(let ty=22;ty<VH-20;ty+=8)
     for(let tx=6;tx<VW-6;tx+=8)
       dr(tx,ty,8,8,((tx/8+ty/8)%2===0)?P.fl:P.fla);
   // Walls
@@ -516,22 +541,22 @@ function drawBG(){
     dr(lx-12,4,24,1,P.lglo);
     dp(lx-12,4,P.lhi,5,1); dp(lx+6,4,P.lhi,5,1);
     ctx.fillStyle='rgba(80,140,45,0.028)';
-    ctx.fillRect((lx-20)*SCALE,9*SCALE,40*SCALE,(VH-15)*SCALE);
+    ctx.fillRect((lx-20)*SCALE,9*SCALE,40*SCALE,(VH-29)*SCALE);
     ctx.fillStyle='rgba(80,140,45,0.014)';
     ctx.beginPath();
     ctx.moveTo((lx-12)*SCALE,9*SCALE);
-    ctx.lineTo((lx-32)*SCALE,VH*SCALE);
-    ctx.lineTo((lx+32)*SCALE,VH*SCALE);
+    ctx.lineTo((lx-32)*SCALE,(VH-16)*SCALE);
+    ctx.lineTo((lx+32)*SCALE,(VH-16)*SCALE);
     ctx.lineTo((lx+12)*SCALE,9*SCALE);
     ctx.closePath();ctx.fill();
   }
-  // Doors bottom
+  // Doors bottom (above skirting)
   for(const dx of [60,160]){
-    dr(dx,VH-18,18,18,P.door);
-    dp(dx,VH-18,1,18,P.dfr); dp(dx+17,VH-18,1,18,P.dfr);
-    dp(dx,VH-18,18,1,P.dfr);
-    dp(dx+8,VH-12,2,2,'#8898a8');
-    dr(dx+3,VH-17,10,3,'#0e1218');
+    dr(dx,VH-34,18,18,P.door);
+    dp(dx,VH-34,1,18,P.dfr); dp(dx+17,VH-34,1,18,P.dfr);
+    dp(dx,VH-34,18,1,P.dfr);
+    dp(dx+8,VH-28,2,2,'#8898a8');
+    dr(dx+3,VH-33,10,3,'#0e1218');
   }
   // Noticeboard
   dr(8,5,18,14,'#182010');
@@ -539,10 +564,10 @@ function drawBG(){
   dp(11,7,P.cpa); dp(14,7,P.ud); dp(17,7,P.ud);
   dp(11,10,P.ud); dp(14,10,P.cpa); dp(17,10,P.ud);
   dp(11,13,P.ud); dp(14,13,P.ud); dp(17,13,P.cpa);
-  // Skirting
-  dr(6,VH-6,VW-12,4,P.trim); dp(6,VH-6,VW-12,1,P.thi);
+  // Skirting — sits just above HUD bar
+  dr(6,VH-20,VW-12,4,P.trim); dp(6,VH-20,VW-12,1,P.thi);
   // Pipes
-  dr(6,24,2,VH-32,P.trim); dr(VW-8,24,2,VH-32,P.trim);
+  dr(6,24,2,VH-46,P.trim); dr(VW-8,24,2,VH-46,P.trim);
   // Collection point
   drawCP();
 }
@@ -563,7 +588,7 @@ function drawCP(){
   dp(ax-2,ay+2,P.cpa); dp(ax+2,ay+2,P.cpa);
   // Label
   ctx.fillStyle=P.ud;
-  ctx.font=`${SCALE*3}px monospace`;
+  ctx.font=`${SCALE*3}px 'Press Start 2P',monospace`;
   ctx.textAlign='center';
   ctx.textBaseline='alphabetic';
   ctx.fillText('COLLECT',(x+w/2)*SCALE,(y+h+7)*SCALE);
@@ -636,14 +661,14 @@ function drawBubble(text, cx, charTopY, alpha){
   const lines=[];
   let cur='';
   for(const w of words){
-    if(cur.length&&(cur+' '+w).length>16){lines.push(cur);cur=w;}
+    if(cur.length&&(cur+' '+w).length>12){lines.push(cur);cur=w;}
     else cur=(cur?cur+' ':'')+w;
   }
   if(cur)lines.push(cur);
   const L=Math.min(lines.length,2);
   const lineH=7, pad=4;
   const maxLen=Math.max(...lines.slice(0,L).map(l=>l.length));
-  const bw=maxLen*3.5+pad*2;
+  const bw=maxLen*5+pad*2;
   const bh=L*lineH+pad;
   const bx=cx-bw/2;
   const by=charTopY-bh-6; // above the character's head
@@ -659,7 +684,7 @@ function drawBubble(text, cx, charTopY, alpha){
   dp(cx,by+bh+2,'#ddd0b0',1,1);
   // Text
   ctx.fillStyle='#2a2010';
-  ctx.font=`${Math.max(2,SCALE)*3}px monospace`;
+  ctx.font=`${Math.max(2,SCALE)*3}px 'Press Start 2P',monospace`;
   ctx.textAlign='center';
   ctx.textBaseline='alphabetic';
   for(let i=0;i<L;i++){
@@ -689,33 +714,34 @@ function drawItem(it){
 }
 
 // ═══════════════════════════════════
-//  HUD
+//  HUD  (bottom bar)
 // ═══════════════════════════════════
 function drawHUD(){
-  dr(6,0,VW-12,14,'rgba(6,8,9,0.88)');
-  // Bar
-  const bw=60,bx=8,by=3;
+  const hudY = VH-14;
+  dr(6,hudY,VW-12,14,'rgba(6,8,9,0.88)');
+  // Cleanliness bar
+  const bw=60,bx=8,by=hudY+3;
   dr(bx,by,bw,5,'#181c28');
   const fw=Math.round(bw*blockScore/100);
   dr(bx,by,fw,5,blockScore>60?P.ua:blockScore>30?P.uw:P.ur);
   dp(bx,by,bw,1,P.trim);
-  ctx.fillStyle=P.ud; ctx.font=`${SCALE*2.8}px monospace`;
+  ctx.fillStyle=P.ud; ctx.font=`${SCALE*2.8}px 'Press Start 2P',monospace`;
   ctx.textAlign='left'; ctx.textBaseline='alphabetic';
   ctx.fillText('BLOCK',bx*SCALE,(by+9)*SCALE);
   // Timer
   ctx.fillStyle=timeLeft>20?P.ud:P.ur;
-  ctx.font=`${SCALE*4}px monospace`; ctx.textAlign='center';
-  ctx.fillText(`${Math.ceil(timeLeft)}s`,(VW/2)*SCALE,11*SCALE);
+  ctx.font=`${SCALE*4}px 'Press Start 2P',monospace`; ctx.textAlign='center';
+  ctx.fillText(`${Math.ceil(timeLeft)}s`,(VW/2)*SCALE,(hudY+11)*SCALE);
   // Wave
-  ctx.fillStyle=P.ud; ctx.font=`${SCALE*3}px monospace`;
-  ctx.fillText(`W${wave}/5`,((VW/2)+38)*SCALE,10*SCALE);
+  ctx.fillStyle=P.ud; ctx.font=`${SCALE*3}px 'Press Start 2P',monospace`;
+  ctx.fillText(`W${wave}/5`,((VW/2)+38)*SCALE,(hudY+10)*SCALE);
   // Score
-  ctx.fillStyle=P.ut; ctx.font=`${SCALE*4.5}px monospace`; ctx.textAlign='right';
-  ctx.fillText(String(score),(VW-8)*SCALE,11*SCALE);
+  ctx.fillStyle=P.ut; ctx.font=`${SCALE*4.5}px 'Press Start 2P',monospace`; ctx.textAlign='right';
+  ctx.fillText(String(score),(VW-8)*SCALE,(hudY+11)*SCALE);
   // Hint
   if(fc<300&&npcs.length===0&&items.length===0){
     ctx.globalAlpha=0.4+0.3*Math.sin(fc*0.06);
-    ctx.fillStyle=P.ud; ctx.font=`${SCALE*3.5}px monospace`; ctx.textAlign='center';
+    ctx.fillStyle=P.ud; ctx.font=`${SCALE*3.5}px 'Press Start 2P',monospace`; ctx.textAlign='center';
     ctx.fillText('WALK INTO a neighbour to intercept',(VW/2)*SCALE,(VH/2+10)*SCALE);
     ctx.fillText('TAP fallen item · carry to COLLECT POINT',(VW/2)*SCALE,(VH/2+20)*SCALE);
     ctx.globalAlpha=1;
@@ -743,7 +769,7 @@ function render(){
   for(const f of floats){
     ctx.globalAlpha=Math.min(1,f.life*2);
     ctx.fillStyle=f.col;
-    ctx.font=`bold ${4*SCALE}px monospace`; ctx.textAlign='center';
+    ctx.font=`bold ${4*SCALE}px 'Press Start 2P',monospace`; ctx.textAlign='center';
     ctx.fillText(f.txt,Math.round(f.x)*SCALE,Math.round(f.y)*SCALE);
   }
   ctx.globalAlpha=1;
