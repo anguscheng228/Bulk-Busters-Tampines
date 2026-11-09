@@ -51,6 +51,7 @@ body, button { -webkit-user-select:none; user-select:none; -webkit-touch-callout
 #ribbon::before, #ribbon::after { content:''; position:absolute; top:.35em; width:1.1em; height:100%; background:#a8322a; border:.14em solid #2a1a10; z-index:-1; }
 #ribbon::before { left:-.9em; clip-path:polygon(0 0,100% 0,100% 100%,0 100%,35% 50%); }
 #ribbon::after { right:-.9em; clip-path:polygon(0 0,100% 0,65% 50%,100% 100%,0 100%); }
+#iosTip { display:none; position:absolute; bottom:.6%; left:0; right:0; text-align:center; font-size:clamp(7px,1.3vw,12px); color:#fff4d6; text-shadow:2px 2px 0 #2a1a10; }
 #startBtn { position:absolute; bottom:2.5%; left:50%; transform:translateX(-50%); background:none; border:none; cursor:pointer; font-family:'Press Start 2P',monospace;
   font-size:clamp(12px,2.2vw,26px); color:#fff4d6; letter-spacing:.08em; padding:1em 2em;
   text-shadow:.12em 0 #2a1a10,-.12em 0 #2a1a10,0 .12em #2a1a10,0 -.12em #2a1a10,.12em .12em #2a1a10; animation:blink 1.1s steps(2,jump-none) infinite; }
@@ -132,6 +133,7 @@ body, button { -webkit-user-select:none; user-select:none; -webkit-touch-callout
       <div class="tshade"></div>
       <div id="hiT"></div>
       <div id="logo"><div id="logoMain">BLOCK PATROL</div><div id="ribbon">BULKY RESCUE</div></div>
+      <div id="iosTip">FULL SCREEN: SHARE → ADD TO HOME SCREEN</div>
       <button id="startBtn">PRESS START</button>
     </div>
   </div>
@@ -175,13 +177,14 @@ let SCALE=1;
 function isFS(){ return !!(document.fullscreenElement||document.webkitFullscreenElement); }
 const qs=new URLSearchParams(location.search);
 const TOUCH_UI=qs.has('pad')?qs.get('pad')!=='0':(navigator.maxTouchPoints>0||'ontouchstart' in window||matchMedia('(pointer:coarse)').matches);
+const PADS=TOUCH_UI&&(qs.get('pad')==='1'||/[?&]hard=1/.test(location.search));
 let LAYOUT='none', ROTATE=false;
 function applyScale(){
   const vv=window.visualViewport;
   const vw=vv?vv.width:window.innerWidth, vh=vv?vv.height:window.innerHeight;
   const padL=document.getElementById('padL'), padR=document.getElementById('padR');
   let fit, cx, cy;
-  if(TOUCH_UI){
+  if(PADS){
     const B=Math.round(Math.max(52,Math.min(132,Math.min(vw,vh)*0.15))), G=Math.round(B*0.2);
     document.documentElement.style.setProperty('--b',B+'px'); document.documentElement.style.setProperty('--g',G+'px');
     const lblH=Math.max(10,B*0.2);
@@ -266,6 +269,7 @@ const DAYS=[
 // Kiosk-friendly rules by default (auto lift, touch-to-sort, gentler pacing). Add ?hard=1 for the original carry-to-bin version.
 const HARD=/[?&]hard=1/.test(location.search), FIRE_T=HARD?12:18;
 const MAXCLOG=4;                                       // items left lying before the corridor counts as BLOCKED
+let goal=null, ping=null, ptrDown=false;
 let thx=null, stamp=null, lbAuto=false, demo=false, titleIdle=0; const demoIn={hx:0,vy:0};
 let AC=null, muted=false; try{ muted=localStorage.getItem('bp_mute')==='1'; }catch(e){}
 function sfx(k){ if(muted||demo) return; try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume();
@@ -765,6 +769,7 @@ function resetRun(){ tut=null; tutDoneRun=false; endShown=false; score=0; totals
 function startDay(i){
   dayIdx=i; TH=DAYS[i]; buildAll();
   day={t:TH.dur, cd:ONE?3.2:0, combo:0, rushed:false, hearts:3, clearAcc:0, playT:0, cdIdx:-1, blocked:false, spawnT:1.6, stopped:0, sorted:0, misses:0, nextBonus:Math.ceil((score+1)/300)*300};
+  goal=null; ping=null; ptrDown=false;
   player={fl:0,x:150,y:FL[0],face:1,carry:null,anim:0,moving:false,riding:false,still:0,rejectT:0,auto:null,vyLatch:false}; flyers=[];
   npcs=[]; items=[]; parts=[]; floats=[]; doorsOpen={}; stamp=null; lift={y:FL[0],fl:0,target:0,moving:false};
   shakeT=0; choice=null; flash=0; hintT=i===0?7:0;
@@ -802,22 +807,32 @@ function toV(t){ const r=canvas.getBoundingClientRect(); return {x:(t.clientX-r.
 canvas.addEventListener('touchstart',e=>{ if(state==='title')return; e.preventDefault(); isTouch=true; const p=toV(e.touches[0]);
   if(tut&&p.x>272&&p.y<17){ skipTutorial(); return; }
   if(state==='choice'){ tapChoice(p); return; } if(state==='walk'&&stateT>1){ stateT=99; return; }
-  touchStart=p; touchNow={...p}; },{passive:false});
+  },{passive:false});
 canvas.addEventListener('touchmove',e=>{ if(!touchStart)return; e.preventDefault(); touchNow=toV(e.touches[0]); },{passive:false});
 canvas.addEventListener('touchend',e=>{ if(state!=='title') e.preventDefault(); touchStart=null; touchNow=null; },{passive:false});
 canvas.addEventListener('mousedown',e=>{ const r=canvas.getBoundingClientRect(); const p={x:(e.clientX-r.left)*VW/r.width,y:(e.clientY-r.top)*VH/r.height};
   if(tut&&p.x>272&&p.y<17){ skipTutorial(); return; }
   if(state==='choice') tapChoice(p); else if(state==='walk'&&stateT>1) stateT=99; });
+function ptrV(e){ const r=canvas.getBoundingClientRect(); return {x:(e.clientX-r.left)*VW/r.width, y:(e.clientY-r.top)*VH/r.height}; }
+function goalFrom(p){ let fl=0,bd=1e9; for(let i=0;i<4;i++){ const d=Math.abs(p.y-(FL[i]-16)); if(d<bd){ bd=d; fl=i; } }
+  const g={x:Math.max(MIN_X,Math.min(VW-8,p.x)),fl,npc:null};
+  for(const n of npcs){ if((n.state==='walk'||n.state==='hesitate')&&Math.abs(n.x-p.x)<15&&Math.abs((FL[n.fl]-16)-p.y)<24){ g.npc=n; g.fl=n.fl; g.x=n.x; break; } }
+  g.x=Math.min(g.x,maxX(g.fl)); return g; }
+canvas.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse'&&e.button!==0) return; lastInput=performance.now(); if(state!=='playing'||demo||!day) return;
+  ptrDown=true; try{ canvas.setPointerCapture(e.pointerId); }catch(_){} const p=ptrV(e); goal=goalFrom(p); ping={x:goal.x,y:FL[goal.fl]-1,t:0}; sfx('tick'); });
+canvas.addEventListener('pointermove',e=>{ if(!ptrDown||state!=='playing') return; goal=goalFrom(ptrV(e)); });
+['pointerup','pointercancel','lostpointercapture'].forEach(ev=>canvas.addEventListener(ev,()=>{ ptrDown=false; }));
 function readInput(){
   if(demo) return demoIn;
   let hx=0,vy=0;
   if(keys.ArrowLeft||keys.a||keys.A)hx-=1; if(keys.ArrowRight||keys.d||keys.D)hx+=1;
   if(keys.ArrowUp||keys.w||keys.W)vy-=1; if(keys.ArrowDown||keys.s||keys.S)vy+=1;
   if(padKeys.left)hx-=1; if(padKeys.right)hx+=1; if(padKeys.up)vy-=1; if(padKeys.down)vy+=1;
-  if(touchStart&&touchNow){ const dx=touchNow.x-touchStart.x, dy=touchNow.y-touchStart.y;
-    if(Math.abs(dx)>4) hx=Math.max(-1,Math.min(1,dx/12));
-    if(Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)) vy=Math.sign(dy); }
-  return {hx,vy};
+  let goFloor=null;
+  if(hx!==0||vy!==0) goal=null;
+  else if(goal&&player){ if(goal.npc){ if(goal.npc.state==='walk'||goal.npc.state==='hesitate'){ goal.x=Math.min(goal.npc.x,maxX(goal.npc.fl)); goal.fl=goal.npc.fl; } else goal=null; }
+    if(goal&&!player.riding){ if(goal.fl!==player.fl) goFloor=goal.fl; else { const dx=goal.x-player.x; if(Math.abs(dx)>2) hx=Math.sign(dx); else if(!goal.npc) goal=null; } } }
+  return {hx,vy,goFloor};
 }
 
 // ═════════════════════════════════════════════
@@ -971,6 +986,7 @@ function updatePlay(dt){
     else {   // one press = walk to the lift and ride to the next floor that needs you
       if(inp.vy===0) player.vyLatch=false;
       else if(!player.vyLatch&&!lift.moving){ player.vyLatch=true; const tgt=smartFloor(-inp.vy); if(tgt!==null) player.auto={tgt}; }
+      if(inp.goFloor!=null&&!player.auto&&!lift.moving&&inp.goFloor!==player.fl) player.auto={tgt:inp.goFloor};
       if(player.auto&&inp.hx!==0) player.auto=null;
       if(player.auto){ const d=LIFT_X-player.x;
         if(Math.abs(d)>1.5){ player.x+=Math.sign(d)*Math.min(Math.abs(d),100*dt); player.face=Math.sign(d); player.moving=true; player.anim+=dt; }
@@ -1095,6 +1111,9 @@ function keycap(x,y,up){ x=Math.round(x); y=Math.round(y); R(b,x-5,y,11,11,C.ink
   if(up){ R(b,x,y+3,1,1,C.ink); R(b,x-1,y+4,3,1,C.ink); R(b,x-2,y+5,5,1,C.ink); } else { R(b,x-2,y+3,5,1,C.ink); R(b,x-1,y+4,3,1,C.ink); R(b,x,y+5,1,1,C.ink); } }
 function stationFrames(){ if(Math.floor(clock*4)%2) return;
   for(const st of STATIONS){ const x=st.x-8, y=st.sy-2, w=17, h=17; R(b,x,y,w,1,C.yellow); R(b,x,y+h-1,w,1,C.yellow); R(b,x,y,1,h,C.yellow); R(b,x+w-1,y,1,h,C.yellow); } }
+function drawGoal(){ if(!TOUCH_UI&&!goal&&!ping) return; const pulse=Math.floor(clock*5)%2;
+  if(goal&&!demo){ const gx=Math.round(goal.x), gy=FL[goal.fl]; b.globalAlpha=0.9; R(b,gx-5-pulse,gy-1,3,1,'#ffe878'); R(b,gx+3+pulse,gy-1,3,1,'#ffe878'); R(b,gx-1,gy-30-pulse*2,3,1,'#ffe878'); R(b,gx-2,gy-31-pulse*2,5,1,'#ffe878'); R(b,gx-1,gy-32-pulse*2,3,1,'#ffe878'); b.globalAlpha=1; }
+  if(ping){ ping.t+=0.016; if(ping.t>0.45) ping=null; else { const r=2+ping.t*30; b.globalAlpha=1-ping.t/0.45; for(let a=0;a<12;a++){ const an=a/12*Math.PI*2; R(b,ping.x+Math.cos(an)*r,ping.y-8+Math.sin(an)*r*0.6,1,1,'#ffffff'); } b.globalAlpha=1; } } }
 function drawGuide(){
   const g=tutGuide();
   if(g){ if(g.stations){ for(const st of STATIONS) arrowDown(st.x,st.sy-17,false); } else arrowDown(g.x,g.y,true);
@@ -1291,7 +1310,7 @@ function drawCountdown(){ if(!ONE||!day||!(day.cd>0)) return;
   if(idx<3){ ctx.fillStyle='rgba(10,20,30,0.28)'; ctx.fillRect(0,0,canvas.width,canvas.height); }
   const size=Math.round((idx===3?34:44)*(1+0.55*Math.pow(1-Math.min(1,fr*2.2),2))); ctx.globalAlpha=idx===3?Math.min(1,(1-fr)*2.5):1;
   setFont(size); outlined(lab,S(160),S(52)-Math.round(size*SCALE*0.2),col,'center',Math.max(2,Math.round(size/9)));
-  setFont(6); outlined(idx<3?(TOUCH_UI?'TOUCH A NEIGHBOUR TO HELP THEM!':'WALK UP TO A NEIGHBOUR TO HELP THEM!'):'SORT IT OUT!',S(160),S(112),C.cream); ctx.globalAlpha=1; }
+  setFont(6); outlined(idx<3?(TOUCH_UI?'TAP A NEIGHBOUR TO GO TO THEM!':'WALK UP TO A NEIGHBOUR TO HELP THEM!'):'SORT IT OUT!',S(160),S(112),C.cream); ctx.globalAlpha=1; }
 function drawDemoBanner(){ if(!demo) return; const on=Math.floor(clock*1.6)%2===0;
   box(S(2),S(2),S(33),S(9),'rgba(14,34,58,0.92)',C.ink); ctx.fillStyle=on?'#ff5a4a':'#7a2a24'; ctx.fillRect(S(5),S(5),S(3),S(3)); setFont(5); outlined('DEMO',S(10),S(4),C.cream,'left');
   if(state!=='choice'&&on){ box(S(70),S(151),S(180),S(11),'rgba(14,34,58,0.92)',C.yellow); setFont(6); outlined(TOUCH_UI?'TOUCH TO PLAY!':'PRESS ANY KEY!',S(160),S(153),C.yellow); } }
@@ -1301,7 +1320,7 @@ function render(){
   b.clearRect(0,0,VW,VH);
   if(state==='walk') drawWalk(stateT);
   else if(state==='finale') drawFinale();
-  else { drawBuildingScene(); drawActors(); drawVictims(); if(state==='playing') drawGuide(); drawParts();
+  else { drawBuildingScene(); drawActors(); drawVictims(); if(state==='playing'){ drawGuide(); drawGoal(); } drawParts();
     if(state==='peel') drawPeel(Math.min(1,stateT/1.3)); if(state==='title'||state==='zoom') drawPeel(0); }
   ctx.imageSmoothingEnabled=false; ctx.fillStyle='#14202a'; ctx.fillRect(0,0,canvas.width,canvas.height);
   const sx=shakeT>0?(Math.random()*3-1.5|0)*SCALE:0, sy=shakeT>0?(Math.random()*3-1.5|0)*SCALE:0;
@@ -1334,7 +1353,7 @@ function render(){
 // ═════════════════════════════════════════════
 //  FLOW
 // ═════════════════════════════════════════════
-function syncPads(){ const show=TOUCH_UI&&!['title','zoom','finale'].includes(state); if(show) padHints();
+function syncPads(){ const show=PADS&&!['title','zoom','finale'].includes(state); if(show) padHints();
   document.getElementById('padL').classList.toggle('on',show); document.getElementById('padR').classList.toggle('on',show); }
 function backToTitle(){
   document.getElementById('lb').classList.remove('on'); demo=false; lbAttract=false; clearTimeout(lbAttractT);
@@ -1409,6 +1428,7 @@ function startGame(){
 }
 (function(){ let done=false; const go=()=>{ if(done) return; done=true; document.getElementById('logo').classList.add('go'); };
   try{ Promise.race([document.fonts.load("16px 'Press Start 2P'"),new Promise(r=>setTimeout(r,1500))]).then(go,go); }catch(e){ go(); } setTimeout(go,1800); })();
+try{ if(/iPhone|iPod/.test(navigator.userAgent)&&!navigator.standalone) document.getElementById('iosTip').style.display='block'; }catch(e){}
 document.getElementById('startBtn').textContent=TOUCH_UI?'TAP TO START':'PRESS START';
 const tsEl=document.getElementById('titleScreen'); let tsT=0;
 tsEl.addEventListener('touchend',e=>{ e.preventDefault(); tsT=Date.now(); startGame(); },{passive:false});
