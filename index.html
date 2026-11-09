@@ -764,7 +764,7 @@ clouds=[{x:10,y:24,s:1},{x:130,y:6,s:1},{x:226,y:34,s:2},{x:60,y:40,s:1}];
 function resetRun(){ tut=null; tutDoneRun=false; endShown=false; score=0; totals={stopped:0,sorted:0,dumped:0,misses:0,best:0,met:{},helped:[]}; thx=null; dayIdx=0; firstChoiceDone=false; pledged=false; }
 function startDay(i){
   dayIdx=i; TH=DAYS[i]; buildAll();
-  day={t:TH.dur, cd:ONE?3.2:0, combo:0, rushed:false, hearts:3, clearAcc:0, playT:0, blocked:false, spawnT:1.6, stopped:0, sorted:0, misses:0, nextBonus:Math.ceil((score+1)/300)*300};
+  day={t:TH.dur, cd:ONE?3.2:0, combo:0, rushed:false, hearts:3, clearAcc:0, playT:0, cdIdx:-1, blocked:false, spawnT:1.6, stopped:0, sorted:0, misses:0, nextBonus:Math.ceil((score+1)/300)*300};
   player={fl:0,x:150,y:FL[0],face:1,carry:null,anim:0,moving:false,riding:false,still:0,rejectT:0,auto:null,vyLatch:false}; flyers=[];
   npcs=[]; items=[]; parts=[]; floats=[]; doorsOpen={}; stamp=null; lift={y:FL[0],fl:0,target:0,moving:false};
   shakeT=0; choice=null; flash=0; hintT=i===0?7:0;
@@ -957,7 +957,7 @@ function startItemChoice(it){
 }
 
 function updatePlay(dt){
-  if(ONE&&day.cd>0){ const pi=Math.min(3,Math.floor((3.2-day.cd)/0.8)); day.cd-=dt; const ni=Math.min(3,Math.floor((3.2-day.cd)/0.8)); if(ni!==pi||day.cd>=3.19) sfx(ni===3?'go':'tick'); if(day.cd>0.8) return; }   // 3-2-1 freeze, then GO! while play has already started
+  if(ONE&&day.cd>0){ day.cd-=dt; const ni=Math.min(3,Math.max(0,Math.floor((3.2-day.cd)/0.8))); if(ni!==day.cdIdx){ day.cdIdx=ni; sfx(ni===3?'go':'tick'); } if(day.cd>0.8) return; }   // 3-2-1 freeze, then GO! while play has already started
   if(tut) updateTut(dt); else day.t-=dt; if(stamp){ stamp.t+=dt; if(stamp.t>2.6) stamp=null; } if(hintT>0) hintT-=dt; if(shakeT>0) shakeT-=dt; if(flash>0) flash-=dt;
   for(const k in doorsOpen){ doorsOpen[k]-=dt; if(doorsOpen[k]<=0) delete doorsOpen[k]; }
   if(lift.moving){ const ty=FL[lift.target], d=ty-lift.y, step=120*dt;
@@ -1398,8 +1398,10 @@ function autoFS(){ if(/[?&]nofs=1/.test(location.search)) return; const el=docum
   try{ if(screen.orientation&&screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{}); }catch(e){}
   try{ if(navigator.wakeLock&&!wl) navigator.wakeLock.request('screen').then(l=>{ wl=l; l.addEventListener('release',()=>{ wl=null; }); }).catch(()=>{}); }catch(e){} }
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&!wl&&state!=='title'){ try{ navigator.wakeLock&&navigator.wakeLock.request('screen').then(l=>{ wl=l; l.addEventListener('release',()=>{ wl=null; }); }).catch(()=>{}); }catch(e){} } });
+function audioUnlock(){ try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume(); const b=AC.createBuffer(1,1,22050), n=AC.createBufferSource(); n.buffer=b; n.connect(AC.destination); n.start(0); }catch(e){} }
+['pointerdown','touchstart','keydown','click'].forEach(ev=>window.addEventListener(ev,audioUnlock,{capture:true,passive:true}));
 function startGame(){
-  if(state!=='title') return; autoFS();
+  if(state!=='title') return; autoFS(); audioUnlock();
   const ts=document.getElementById('titleScreen'); resetRun(); startDay(0); setState('zoom');
   ts.classList.add('zooming');
   setTimeout(()=>{ ts.classList.add('fading'); setState('peel'); },950);
